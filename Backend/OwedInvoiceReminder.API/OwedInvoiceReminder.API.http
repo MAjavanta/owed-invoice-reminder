@@ -1,6 +1,19 @@
-@OwedInvoiceReminder.API_HostAddress = http://localhost:5219
+@OwedInvoiceReminder.API_HostAddress = http://localhost:5219/api/v1
 
-GET {{OwedInvoiceReminder.API_HostAddress}}/api/v1/invoices/
+GET {{OwedInvoiceReminder.API_HostAddress}}/invoices/
 Accept: application/json
 
 ###
+GET {{OwedInvoiceReminder.API_HostAddress}}/invoices/3
+
+###
+POST {{OwedInvoiceReminder.API_HostAddress}}/invoices/
+Content-Type: application/json
+
+{
+    "clientName": "Sharjeel",
+    "clientEmail": "sharjeel743@yahoo.co.uk",
+    "invoiceRef": "INV-01X",
+    "amountPence": 14999,
+    "dueDate": "2026-06-30"
+}

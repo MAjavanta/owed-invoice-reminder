@@ -1,3 +1,4 @@
+using OwedInvoiceReminder.API.DTOs;
 using OwedInvoiceReminder.API.Models;
 using OwedInvoiceReminder.API.Models.Enums;
 
@@ -5,7 +6,8 @@ namespace OwedInvoiceReminder.API.Endpoints;
 
 public static class InvoicesEndpoint
 {
-    private static readonly List<Invoice> invoices = [
+    const string GET_INVOICE_ENDPOINT = "GetInvoice";
+    private static readonly List<Invoice> _invoices = [
         new()
         {
             Id = 1,
@@ -55,8 +57,37 @@ public static class InvoicesEndpoint
 
     public static void MapInvoicesEndpoint(this WebApplication app)
     {
-        var group = app.MapGroup("api/v1");
+        var group = app.MapGroup("api/v1/invoices");
 
-        group.MapGet("/invoices", () => Results.Ok(invoices));
+        group.MapGet("/", () => Results.Ok(_invoices));
+
+        group.MapGet("/{id:int}", (int id) =>
+        {
+            var invoice = _invoices.Find(invoice => invoice.Id == id);
+            return invoice is null
+                ? Results.NotFound()
+                : Results.Ok(invoice);
+        })
+        .WithName(GET_INVOICE_ENDPOINT);
+
+        group.MapPost("/", (CreateInvoiceRequestDTO dto) =>
+        {
+            var maxIndex = _invoices.Max(invoice => invoice.Id);
+            var invoice = new Invoice()
+            {
+                Id = maxIndex + 1,
+                ClientName = dto.ClientName,
+                ClientEmail = dto.ClientEmail,
+                InvoiceRef = dto.InvoiceRef,
+                AmountPence = dto.AmountPence,
+                DueDate = dto.DueDate,
+                Status = InvoiceStatus.Upcoming,
+                DateCreated = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _invoices.Add(invoice);
+            return Results.CreatedAtRoute(
+                GET_INVOICE_ENDPOINT, new { id = invoice.Id }, invoice
+            );
+        });
     }
 }
