@@ -82,7 +82,7 @@ public static class InvoicesEndpoint
                 AmountPence = dto.AmountPence,
                 DueDate = dto.DueDate,
                 Status = InvoiceStatus.Upcoming,
-                DateCreated = DateOnly.FromDateTime(DateTime.Now)
+                DateCreated = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _invoices.Add(invoice);
             return Results.CreatedAtRoute(
