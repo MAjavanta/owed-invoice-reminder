@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import getInvoices from "../api/get_invoices";
 import { useEffect, useState } from "react";
 import type { Invoice } from "../types/invoice";
+import InvoiceListItem from "../components/InvoiceListItem";
 
 export default function InvoiceList() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -15,7 +16,7 @@ export default function InvoiceList() {
   }, []);
 
   const invoiceNames = invoices.map((invoice) => (
-    <li key={invoice.id}>{invoice.clientName}</li>
+    <InvoiceListItem key={invoice.id} invoice={invoice} />
   ));
   return (
     <>
@@ -24,6 +25,9 @@ export default function InvoiceList() {
         <Link to="/">Home</Link>
       </nav>
       <ul>{invoiceNames}</ul>
+      <Link to="/create-invoice">
+        <button>Create Form</button>
+      </Link>
     </>
   );
 }

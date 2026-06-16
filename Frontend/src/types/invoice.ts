@@ -1,4 +1,4 @@
-export type Invoice = {
+export interface Invoice {
   id: string;
   clientName: string;
-};
+}
